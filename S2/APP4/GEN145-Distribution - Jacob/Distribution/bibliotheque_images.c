@@ -22,7 +22,6 @@ Elles permettent de lire, écrire, copier, créer, pivoter (et plus) les fichier
  * @param *p_metadonnees: Pointeur de type struct MetaData (3 variables, Auteur, date de création et leiu de création)(voir .h pour la struct);
  * 
  * @return int: la fonction retourne un chiffre pour dire si il a eu une erreur ou non (voir le .h)
- * le robot détecte aussi un mur en avant
  */
 int pgm_lire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int *p_maxval, struct MetaData *p_metadonnees)
 {
