@@ -1,5 +1,5 @@
 /********
-Fichier: gestion_images.c
+Fichier: bibliotheque_images.h
 Auteurs: Charles-Antoine Brunet (structure)
 		 Domingo Palao (code original en C++)
 		 Alexandre Huppe (passage de C++ vers C)
