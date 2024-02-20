@@ -11,6 +11,9 @@ Elles permettent de lire, écrire, copier, créer, pivoter (et plus) les fichier
 
 #include "bibliotheque_images.h"
 
+//Fonctions local
+
+
 /*
  * @brief Fonction qui va permettre de lire les fichiers de type PGM (Portable Gray Map);
  * 
@@ -25,12 +28,97 @@ Elles permettent de lire, écrire, copier, créer, pivoter (et plus) les fichier
  */
 int pgm_lire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int *p_maxval, struct MetaData *p_metadonnees)
 {
+	
     return OK;
 }
 
+///PGM Ecrire
+
+	int string_length(const char* str) {
+		int length = 0;
+		// Loop jusqua fin
+		while (*str != '\0') {
+			length++;
+			str++;
+		}
+		return length;
+	}
 int pgm_ecrire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval, struct MetaData metadonnees)
 {
-    return OK;
+	int Donnee_Presente = 0;
+	//Ouvir fichier
+	FILE *fichier = fopen(nom_fichier, "w");
+	if (fichier == NULL)
+	{
+		return ERREUR_FICHIER;
+	}
+	
+	
+	//valid info avant d'ecrire Format
+		//Valide valeur max
+		if ((maxval < 0) || (maxval > MAX_VALEUR)){
+			return ERREUR_FORMAT;}
+		//Valide grosseurs des champs auteur
+		if (string_length(metadonnees.auteur)> MAX_CHAINE){
+			return ERREUR_FORMAT;}
+		
+		//check si date int et bon format yyyy-mm-dd
+		int date_lengh = string_length(metadonnees.dateCreation);
+		
+		if (date_lengh != 10)
+			return ERREUR_FORMAT; 
+			
+		for (int i=0; i<10; i++)
+		{
+		if (i < 4 && (metadonnees.dateCreation[i] < '0' || metadonnees.dateCreation[i] > '9'))
+			return ERREUR_FORMAT;
+		if (i == 4 && (metadonnees.dateCreation[i] != '-'))
+			return ERREUR_FORMAT;
+		if (i > 4 && i < 7 && (metadonnees.dateCreation[i] < '0' || metadonnees.dateCreation[i] > '9'))
+			return ERREUR_FORMAT;
+		if (i == 7 && (metadonnees.dateCreation[i] != '-'))
+			return ERREUR_FORMAT;	
+		if (i > 7 && (metadonnees.dateCreation[i] < '0' || metadonnees.dateCreation[i] > '9'))
+			return ERREUR_FORMAT;	
+		}
+		
+			//Valid si integer
+		//ajout ici
+		
+		if (string_length(metadonnees.auteur) > 0 && string_length(metadonnees.dateCreation) && string_length(metadonnees.lieuCreation)){
+			Donnee_Presente = 1;
+		}
+	
+	
+	//Ecrire MetaData
+	if (Donnee_Presente == 1){
+		fprintf(fichier, "#%s; %s; %s\n", metadonnees.auteur, metadonnees.dateCreation, metadonnees.lieuCreation);
+	}
+	
+	
+	//Ecrire Format
+	fprintf(fichier, "P2\n%d %d\n%d\n", colonnes, lignes, maxval);
+	
+	
+	//Validation grandeur Hauteur et Largeur
+	
+	//Ecrire donnees de la matrice
+	for(int j=0; j < lignes; j++){
+		for (int i=0; i < colonnes; i++){
+			if (matrice[j][i] >= 0 && matrice[j][i]<= maxval){
+				fprintf(fichier,"%d ", matrice[j][i]);}
+			else{
+				return ERREUR_FORMAT;
+			}
+		}
+		fprintf(fichier, "\n");
+			
+	}
+		
+	//close le fichier
+	fclose(fichier);
+	
+	return OK;
 }
 
 int pgm_copier(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, int matrice2[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes2, int *p_colonnes2)
