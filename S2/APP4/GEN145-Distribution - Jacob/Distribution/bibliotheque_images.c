@@ -11,6 +11,9 @@ Elles permettent de lire, écrire, copier, créer, pivoter (et plus) les fichier
 
 #include "bibliotheque_images.h"
 
+//Fonctions local
+
+
 /*
  * @brief Fonction qui va permettre de lire les fichiers de type PGM (Portable Gray Map);
  * 
@@ -25,12 +28,69 @@ Elles permettent de lire, écrire, copier, créer, pivoter (et plus) les fichier
  */
 int pgm_lire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int *p_maxval, struct MetaData *p_metadonnees)
 {
+	
     return OK;
 }
 
+///PGM Ecrire
+
+	int string_length(const char* str) {
+		int length = 0;
+		// Loop jusqua fin
+		while (*str != '\0') {
+			length++;
+			str++;
+		}
+		return length;
+	}
 int pgm_ecrire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval, struct MetaData metadonnees)
 {
-    return OK;
+	int Donnee_Presente = 0;
+	char donnee[MAX_CHAINE];
+	//Ouvir fichier
+	FILE *fichier = fopen(nom_fichier, "w");
+	if (fichier == NULL)
+	{
+		return ERREUR_FICHIER;
+	}
+	
+	
+	//valid info avant d'ecrire Format
+			//Valide valeur max
+		if ((maxval < 0) || (maxval >= 65536)){
+			return ERREUR_FORMAT;}
+			//Valide grosseurs des champs auteur
+		if (string_length(metadonnees.auteur)> MAX_CHAINE){
+			return ERREUR_FORMAT;}
+			//Valid si integer
+		//ajout ici
+		
+		if string_length(metadonnees.auteur) > 0 OR string_length(metadonnees.dateCreation) OR tring_length(metadonnees.lieuCreation){
+		Donnee_Presente = 1
+		}
+	
+	
+	//Ecrire MetaData
+	fprintf(fichier, "%s; %s; %s\n", metadonnees.auteur, metadonnees.dateCreation, metadonnees.lieuCreation);
+	
+	
+	//Ecrire Format
+	fprintf(fichier, "#%s\n%d %d\n%d\n",NB_MAGIQUE_PGM, colonnes, lignes, maxval);
+	
+	
+	//Validation grandeur Hauteur et Largeur
+	
+	//Ecrire donnees de la matrice
+	for(int j=0; j < lignes; j++){
+		for (int i=0; i < colonnes; i++)
+			fscanf(matrice[i][j],"%d", &fichier);
+		}
+			
+	}
+		
+	
+	
+	return OK;
 }
 
 int pgm_copier(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, int matrice2[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes2, int *p_colonnes2)

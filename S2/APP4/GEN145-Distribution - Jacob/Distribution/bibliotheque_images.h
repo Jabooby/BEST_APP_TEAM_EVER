@@ -35,6 +35,10 @@ Description: Solution de la problematique pour GEN145.
 // Longueur maximale d'une chaine de caracteres
 #define MAX_CHAINE 1024
 
+//valeurs de P2 et P3 a comparer pour les fonctions
+#define NB_MAGIQUE_PGM 'P2'
+#define NB_MAGIQUE_PPM 'P3'
+
 struct MetaData{
     char auteur[MAX_CHAINE];
     char dateCreation[MAX_CHAINE]; // yyyy-mm-dd 

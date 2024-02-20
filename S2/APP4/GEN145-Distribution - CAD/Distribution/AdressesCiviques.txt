@@ -1,0 +1,3 @@
+2500;Bd de lUniversite;Shebrooke;;QC;J1K 2R1
+231;rue des Fleurs;app. 4;Beau Jardin;QC;G3P 0A3
+1829;avenue du Commerce;bureau 200;Montreal;QC;J8S 2F2

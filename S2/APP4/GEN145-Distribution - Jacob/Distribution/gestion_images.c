@@ -17,9 +17,9 @@ struct RGB imageRGB2[MAX_HAUTEUR][MAX_LARGEUR];
 int main()
 {
     int lignes1, colonnes1;
-    int lignes2, colonnes2;
+    //~ int lignes2, colonnes2;
     int maxval;
-    int histogramme[MAX_VALEUR+1];
+    //~ int histogramme[MAX_VALEUR+1];
     char nom[MAX_CHAINE];
     struct MetaData metadonnees;
 
