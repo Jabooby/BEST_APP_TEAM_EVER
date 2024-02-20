@@ -93,14 +93,80 @@ int pgm_lire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_l
 		}
 		printf("%s;%s;%s\n", p_metadonnees->auteur, p_metadonnees->dateCreation, p_metadonnees->lieuCreation);
 	}
+	else
+	{
+		ungetc(c, fpLecture);
+	}
 	//METADATA FIN
 	//VALIDE DÉBUT
 	fgets(str, 3, fpLecture);
 	printf("%s et %s", str, VAR_PGM);
 	if(stringCompare(str, VAR_PGM) == IDENTIQUES)
 	{
-		printf("Success");
+		c = fgetc(fpLecture);
+		if(c == '\0' || c == ' ' || c == '\n' || c == '\r')
+		{
+			fscanf(fpLecture, "%i",p_colonnes);
+			c = fgetc(fpLecture);
+			if(c == '\0' || c == ' ' || c == '\n' || c == '\r')
+			{
+				fscanf(fpLecture, "%i", p_lignes);
+				c = fgetc(fpLecture);
+				if(c == '\0' || c == ' ' || c == '\n' || c == '\r')
+				{
+					fscanf(fpLecture, "%i", p_maxval);
+					printf("Colonne: %i \n Ligne: %i \n Max. Valeur: %i \n", *p_colonnes, *p_lignes, *p_maxval);
+				}
+				else
+				{
+					status = ERREUR_FORMAT;
+					return(status);
+				}
+			}
+			else
+			{
+				status = ERREUR_FORMAT;
+				return(status);
+			}
+		}
+		else
+		{
+			status = ERREUR_FORMAT;
+			return(status);
+		}
 	}
+	else
+	{
+		status = ERREUR_FORMAT;
+		return(status);
+	}
+	if(!(*p_maxval > 0 && *p_maxval <= MAX_VALEUR))
+	{
+		status = ERREUR_FORMAT;
+		return(status);
+	}
+	else if (!(( *p_colonnes > 0 && *p_colonnes <= MAX_LARGEUR) && (*p_lignes > 0 && *p_lignes <= MAX_HAUTEUR)))
+	{
+		status = ERREUR_TAILLE;
+		return(status);
+	}
+	//VALIDE FIN
+	//SAVE DONNÉES DÉBUT
+	for(i = 0; i < *p_lignes; i++)
+	{
+		for(j = 0; j < *p_colonnes; j++)
+		{
+			fscanf(fpLecture, "%i", &matrice[i][j]);
+			if(!(matrice[i][j] >= 0 && matrice[i][j] <= *p_maxval))
+			{
+				status = ERREUR_FORMAT;
+				return(status);
+			}
+			printf("%i ", matrice[i][j]);
+		}
+		printf("\n");
+	}
+	//SAVE DONNÉES FIN
 	fclose(fpLecture); //fin de lecture
 	return (status);
 }

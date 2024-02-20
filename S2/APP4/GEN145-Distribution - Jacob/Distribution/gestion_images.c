@@ -16,11 +16,11 @@ struct RGB imageRGB2[MAX_HAUTEUR][MAX_LARGEUR];
 
 int main()
 {
-    int lignes1, colonnes1;
+	int lignes1, colonnes1;
     int lignes2, colonnes2;
     int maxval;
     int histogramme[MAX_VALEUR+1];
-    char nom[MAX_CHAINE] = "test.pgm";
+    char nom[MAX_CHAINE] = "Sherbrooke_Frontenac_nuit.pgm";
     struct MetaData metadonnees;
 
 	int retour;
@@ -28,9 +28,7 @@ int main()
     printf("-> Debut!\n");
 
 	// exemple d'appel de fonction
-    retour = pgm_lire(nom, image1, 
-                      &lignes1, &colonnes1, 
-                      &maxval, &metadonnees);
+    retour = pgm_lire(nom, image1, &lignes1, &colonnes1, &maxval, &metadonnees);
 
 	// exemple detraitement d'un code de retour (erreur ou reussite)
 	printf("-> Retour: ");
