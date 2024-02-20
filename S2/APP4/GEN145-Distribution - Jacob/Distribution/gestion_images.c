@@ -17,10 +17,10 @@ struct RGB imageRGB2[MAX_HAUTEUR][MAX_LARGEUR];
 int main()
 {
     int lignes1, colonnes1;
-    //~ int lignes2, colonnes2;
+    int lignes2, colonnes2;
     int maxval;
-    //~ int histogramme[MAX_VALEUR+1];
-    char nom[MAX_CHAINE];
+    int histogramme[MAX_VALEUR+1];
+    char nom[MAX_CHAINE] = "test.pgm";
     struct MetaData metadonnees;
 
 	int retour;

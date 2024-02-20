@@ -11,9 +11,26 @@ Elles permettent de lire, écrire, copier, créer, pivoter (et plus) les fichier
 
 #include "bibliotheque_images.h"
 
-//Fonctions local
-
-
+int stringCompare(char *str1, char *str2)
+{
+	int same = IDENTIQUES; //va être retourné 0 si pareille, 1 si différent
+	int i = 0;  // integer d'incrémentation 
+    while(str1[i]!='\0' && str2[i]!='\0')  //tant que str1 et str2 n'est pas à la fin de leur string 
+    {  
+       if(str1[i] != str2[i])  //vérification que le caractère est identique
+       {  
+           same = DIFFERENTES;  //pas pareille
+           break;  
+       }  
+       i++;  
+    } 
+    if(str1[i]!='\0' || str2[i]!='\0') //pas la même longueur
+    {
+		same = DIFFERENTES;
+	}
+    return same;
+     
+}
 /*
  * @brief Fonction qui va permettre de lire les fichiers de type PGM (Portable Gray Map);
  * 
@@ -28,69 +45,69 @@ Elles permettent de lire, écrire, copier, créer, pivoter (et plus) les fichier
  */
 int pgm_lire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int *p_maxval, struct MetaData *p_metadonnees)
 {
+	int status = OK;
+	int i, j, compteur;
+	int decalage;
+	char str[MAX_CHAINE];
+	char c;
 	
-    return OK;
+	FILE *fpLecture;
+	//ouverture de lecture
+	if ( (fpLecture = fopen(nom_fichier, "r")) == NULL)
+	{
+		fprintf(stderr, "Error opening read file. \n");
+		status = ERREUR_FICHIER;
+		return(status);
+	}
+	//METADATA DÉBUT
+	c = fgetc(fpLecture); // lecture du premier caractère pour commentaire||Metadata
+	if( c == '#')
+	{
+		compteur = 0;
+		decalage = 0;
+		for(i = 0; i < (MAX_CHAINE * 3); i++)
+		{
+			c = fgetc(fpLecture);
+			if( c == ';')
+			{
+				decalage = i + 1;
+				compteur++;
+			}
+			else if ( c =='\n' || c =='\0' || c == '\r')
+				i = (MAX_CHAINE * 3);
+			else
+			{
+				switch(compteur)
+				{
+					case(0):
+						p_metadonnees->auteur[i-decalage] = c;
+						break;
+					case(1):
+						p_metadonnees->dateCreation[i-decalage] = c;
+						break;
+					case(2):
+						p_metadonnees->lieuCreation[i-decalage] = c;
+						break;
+				}
+			}
+		}
+		printf("%s;%s;%s\n", p_metadonnees->auteur, p_metadonnees->dateCreation, p_metadonnees->lieuCreation);
+	}
+	//METADATA FIN
+	//VALIDE DÉBUT
+	fgets(str, 3, fpLecture);
+	printf("%s et %s", str, VAR_PGM);
+	if(stringCompare(str, VAR_PGM) == IDENTIQUES)
+	{
+		printf("Success");
+	}
+	fclose(fpLecture); //fin de lecture
+	return (status);
 }
 
-///PGM Ecrire
-
-	int string_length(const char* str) {
-		int length = 0;
-		// Loop jusqua fin
-		while (*str != '\0') {
-			length++;
-			str++;
-		}
-		return length;
-	}
 int pgm_ecrire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval, struct MetaData metadonnees)
 {
-	int Donnee_Presente = 0;
-	char donnee[MAX_CHAINE];
-	//Ouvir fichier
-	FILE *fichier = fopen(nom_fichier, "w");
-	if (fichier == NULL)
-	{
-		return ERREUR_FICHIER;
-	}
-	
-	
-	//valid info avant d'ecrire Format
-			//Valide valeur max
-		if ((maxval < 0) || (maxval >= 65536)){
-			return ERREUR_FORMAT;}
-			//Valide grosseurs des champs auteur
-		if (string_length(metadonnees.auteur)> MAX_CHAINE){
-			return ERREUR_FORMAT;}
-			//Valid si integer
-		//ajout ici
-		
-		if string_length(metadonnees.auteur) > 0 OR string_length(metadonnees.dateCreation) OR tring_length(metadonnees.lieuCreation){
-		Donnee_Presente = 1
-		}
-	
-	
-	//Ecrire MetaData
-	fprintf(fichier, "%s; %s; %s\n", metadonnees.auteur, metadonnees.dateCreation, metadonnees.lieuCreation);
-	
-	
-	//Ecrire Format
-	fprintf(fichier, "#%s\n%d %d\n%d\n",NB_MAGIQUE_PGM, colonnes, lignes, maxval);
-	
-	
-	//Validation grandeur Hauteur et Largeur
-	
-	//Ecrire donnees de la matrice
-	for(int j=0; j < lignes; j++){
-		for (int i=0; i < colonnes; i++)
-			fscanf(matrice[i][j],"%d", &fichier);
-		}
-			
-	}
-		
-	
-	
-	return OK;
+    return OK;
 }
 
 int pgm_copier(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, int matrice2[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes2, int *p_colonnes2)

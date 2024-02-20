@@ -27,6 +27,7 @@ Description: Solution de la problematique pour GEN145.
 #define ERREUR_FORMAT -3
 #define IDENTIQUES 0
 #define DIFFERENTES 1
+#define VAR_PGM "P2\0"
 
 // Sens des rotations pour l'operation pivoter90
 #define SENS_ANTIHORAIRE 0
@@ -51,6 +52,8 @@ struct RGB
     int valeurG;
     int valeurB;
 };
+//fonction user
+int stringCompare(char *str1, char *str2);
 
 // Operations pour les images noir et blanc
 int pgm_lire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int *p_maxval, struct MetaData *p_metadonnees);
