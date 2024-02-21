@@ -58,37 +58,45 @@ int pgm_ecrire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int li
 	//Valide valeur max
 		if ((maxval < 0) || (maxval > MAX_VALEUR)){
 			return ERREUR_FORMAT;}
-	//Valide grosseurs du champ auteur est correct
-		if (string_length(metadonnees.auteur)> MAX_CHAINE){
-			return ERREUR_FORMAT;}
-		
-	//check si date int et bon format yyyy-mm-dd
-		int date_lengh = string_length(metadonnees.dateCreation);
-		
-		if (date_lengh != 10)
-			return ERREUR_FORMAT; 
-			
-		for (int i=0; i<10; i++)
-		{
-		if (i < 4 && (metadonnees.dateCreation[i] < '0' || metadonnees.dateCreation[i] > '9'))
-			return ERREUR_FORMAT;
-		if (i == 4 && (metadonnees.dateCreation[i] != '-'))
-			return ERREUR_FORMAT;
-		if (i > 4 && i < 7 && (metadonnees.dateCreation[i] < '0' || metadonnees.dateCreation[i] > '9'))
-			return ERREUR_FORMAT;
-		if (i == 7 && (metadonnees.dateCreation[i] != '-'))
-			return ERREUR_FORMAT;	
-		if (i > 7 && (metadonnees.dateCreation[i] < '0' || metadonnees.dateCreation[i] > '9'))
-			return ERREUR_FORMAT;	
-		}
-		
-
+	
+	
 	//Check s'il y a un commentaire a ecrire
-		if (string_length(metadonnees.auteur) > 0 && string_length(metadonnees.dateCreation) && string_length(metadonnees.lieuCreation)){
+		if (string_length(metadonnees.auteur) > 0 || string_length(metadonnees.dateCreation) > 0 || string_length(metadonnees.lieuCreation) > 0){
 			Donnee_Presente = 1;
 		}
 	
 	
+	if (Donnee_Presente == 1){
+		//Valide grosseurs du champ auteur est correct
+			if (string_length(metadonnees.auteur)> MAX_CHAINE){
+				return ERREUR_FORMAT;}
+			
+		//check si date int et bon format yyyy-mm-dd
+			if (string_length(metadonnees.dateCreation) > 0){
+				int date_lengh = string_length(metadonnees.dateCreation);
+			
+				if (date_lengh != 10)
+					return ERREUR_FORMAT; 
+				
+				for (int i=0; i<10; i++)
+				{
+					if (i < 4 && (metadonnees.dateCreation[i] < '0' || metadonnees.dateCreation[i] > '9'))
+						return ERREUR_FORMAT;
+					if (i == 4 && (metadonnees.dateCreation[i] != '-'))
+						return ERREUR_FORMAT;
+					if (i > 4 && i < 7 && (metadonnees.dateCreation[i] < '0' || metadonnees.dateCreation[i] > '9'))
+						return ERREUR_FORMAT;
+					if (i == 7 && (metadonnees.dateCreation[i] != '-'))
+						return ERREUR_FORMAT;	
+					if (i > 7 && (metadonnees.dateCreation[i] < '0' || metadonnees.dateCreation[i] > '9'))
+						return ERREUR_FORMAT;	
+				}
+			}
+		//Valide grosseurs du champ lieucreation est correct
+			if (string_length(metadonnees.lieuCreation)> MAX_CHAINE){
+				return ERREUR_FORMAT;}
+	}
+
 	//Ecrire MetaData
 		if (Donnee_Presente == 1){
 			fprintf(fichier, "#%s; %s; %s\n", metadonnees.auteur, metadonnees.dateCreation, metadonnees.lieuCreation);
@@ -122,6 +130,8 @@ int pgm_ecrire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int li
 ///FIN de PGM Ecrire
 
 ///DEBUT PGM Copier
+
+
 int pgm_copier(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, 
 			   int matrice2[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes2, int *p_colonnes2)
 {
@@ -131,7 +141,7 @@ int pgm_copier(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes
 	//verifie si lignes & colonnes sont de grandeur approprier
 		if (lignes1 > MAX_HAUTEUR || lignes1 < 1 || 
 		    colonnes1 > MAX_LARGEUR || colonnes1 < 1){
-			return ERREUR;} //a verifier si bon type d<erreur		
+			return ERREUR_TAILLE;} 		
 	
 	//copie lignes et colones dans pointeur respectif
 		*p_lignes2 = lignes1;
@@ -163,7 +173,7 @@ int pgm_creer_histogramme(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int
 	//verifie si lignes & colonnes sont de grandeur approprier
 		if (lignes > MAX_HAUTEUR || lignes < 1 || 
 		    colonnes > MAX_LARGEUR || colonnes < 1){
-			return ERREUR;} //a verifier si bon type d<erreur
+			return ERREUR_TAILLE;}
 	
 	//creation de l'historigramme
 	int index = 0;
@@ -211,31 +221,136 @@ int pgm_couleur_preponderante(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes,
 
 
 
-
+///DEBUT pgm_eclaircir_noircir
 int pgm_eclaircir_noircir(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval, int valeur)
 {
+	//verifie si lignes & colonnes sont de grandeur approprier
+		if (lignes > MAX_HAUTEUR || lignes < 1 || 
+		    colonnes > MAX_LARGEUR || colonnes < 1){
+			return ERREUR_TAILLE;} 
+	
+	//ajustement de la matrice avec valeur
+		for(int i=0; i < lignes; i++){
+			for (int j=0; j < colonnes; j++){
+				matrice[i][j] = matrice[i][j] + valeur;
+				//extremitees
+				if (matrice[i][j] > maxval)
+					matrice[i][j] = maxval;
+				if (matrice[i][j] < 0)
+					matrice[i][j] = 0;	
+			}
+		}
+	
+	
     return OK;
 }
+///FIN pgm_eclaircir_noircir
 
+///DEBUT pgm_creer_negatif
 int pgm_creer_negatif(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval)
 {
+	
+	//verifie si lignes & colonnes sont de grandeur approprier
+		if (lignes > MAX_HAUTEUR || lignes < 1 || 
+		    colonnes > MAX_LARGEUR || colonnes < 1){
+			return ERREUR_TAILLE;} 
+	//verif de maxval
+		if (maxval < 1 || maxval > MAX_VALEUR)
+			return ERREUR;
+	//reecriture de l'image
+		for(int i=0; i < lignes; i++){
+			for (int j=0; j < colonnes; j++){
+				//empeche l'ecriture de negatif, plus petite valeur c'est 0 et plus grande maxval
+				if (matrice[i][j] > maxval)
+					return ERREUR;
+				
+				matrice[i][j] = maxval - matrice[i][j];
+		
+			}
+		}
+	
+	
     return OK;
 }
+///FIN pgm_creer_negatif
 
+///DEBUT pgm_extraire
 int pgm_extraire(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, int lignes2, int colonnes2, int *p_lignes, int *p_colonnes)
 {
+	
+	//ajouter jacob ici
     return OK;
 }
+///FIN pgm_extraire
 
-int pgm_sont_identiques(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, int matrice2[MAX_HAUTEUR][MAX_LARGEUR], int lignes2, int colonnes2)
+///DEBUT pgm_sont_identiques
+int pgm_sont_identiques(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, 
+						int matrice2[MAX_HAUTEUR][MAX_LARGEUR], int lignes2, int colonnes2)
 {
-    return OK;
+	//verifie si lignes & colonnes sont de grandeur approprier
+		if (lignes1 > MAX_HAUTEUR || lignes1 < 1 || 
+		    colonnes1 > MAX_LARGEUR || colonnes1 < 1){
+			return ERREUR_FORMAT;} 
+	
+	//verifie si lignes1 et 2, et colonnes 1 et 2 sont identique
+		if (lignes1 != lignes2 || colonnes1 != colonnes2)
+			return DIFFERENTES;
+			
+	//verifie pixel
+		for (int i=0; i< lignes1; i++){
+			for(int j=0; j<colonnes1; j++){
+				if (matrice1[i][j] != matrice2[i][j])
+					return DIFFERENTES;
+			}
+		}
+		
+	
+    return IDENTIQUES;
 }
+///FIN pgm_sont_identiques
 
+
+///DEBUT pgm_pivoter90
 int pgm_pivoter90(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int sens)
 {
+	
+	//verifie si lignes & colonnes sont de grandeur approprier
+		if (*p_lignes > MAX_HAUTEUR || *p_lignes < 1 || 
+		    *p_colonnes > MAX_LARGEUR || *p_colonnes < 1){
+			return ERREUR_FORMAT;}
+	//creer matrice intermediaire
+		int lignes_inter = *p_colonnes;
+		int colonnes_inter = *p_lignes;
+		int matrice_inter[MAX_HAUTEUR][MAX_LARGEUR];
+		
+	//ecriture de la matrice
+		for (int i=0; i < *p_lignes; i++){
+			for(int j=0; j < *p_colonnes; j++){
+				if (sens == 1){
+					matrice_inter[j][*p_lignes-1-i] = matrice[i][j];}
+				if (sens == 0)
+					matrice_inter[*p_colonnes-1-j][i] = matrice[i][j];
+			}
+		}
+		
+		for (int x = 0; x < lignes_inter; x++) {
+			for (int y = 0; y < colonnes_inter; y++) {
+				printf("%d ", matrice_inter[x][y]);
+			}	
+			printf("\n");
+		}
+
+	//copie matrice intermediaire dans la matrice
+	int retour = pgm_copier(matrice_inter, lignes_inter, colonnes_inter, 
+							matrice, p_lignes, p_colonnes);
+	if (retour != OK)
+		return ERREUR;
+		
+	
     return OK;
 }
+///FIN pgm_pivoter90
+
 
 // Operations pour les images couleurs
 int ppm_lire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int *p_maxval, struct MetaData *p_metadonnees)
