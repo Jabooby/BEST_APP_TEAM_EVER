@@ -29,6 +29,7 @@ Description: Solution de la problematique pour GEN145.
 #define IDENTIQUES 0
 #define DIFFERENTES 1
 #define VAR_PGM "P2\0"
+#define VAR_PPM "P3\0"
 
 // Sens des rotations pour l'operation pivoter90
 #define SENS_ANTIHORAIRE 0

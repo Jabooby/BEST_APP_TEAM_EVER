@@ -43,7 +43,7 @@ int stringCompare(char *str1, char *str2)
 
 int verifLigneColonne(int nbLignes, int nbColonnes)
 {
-	if((nbLignes <= 256 && nbLignes > 0) || (nbColonnes  <= 256 && nbColonnes > 0))
+	if((nbLignes <= 256 && nbLignes >= 0) || (nbColonnes  <= 256 && nbColonnes >= 0))
 		return OK;
 	else
 		return ERREUR;
@@ -60,7 +60,8 @@ int verifLigneColonne(int nbLignes, int nbColonnes)
  * 
  * @return int: la fonction retourne un chiffre pour dire si il a eu une erreur ou non (voir le .h)
  */
-int pgm_lire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int *p_maxval, struct MetaData *p_metadonnees)
+int pgm_lire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes,
+				int *p_colonnes, int *p_maxval, struct MetaData *p_metadonnees)
 {
 	int status = OK;
 	int i, j, compteur;
@@ -207,13 +208,13 @@ int pgm_ecrire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int li
 		//Valide grosseurs des champs auteur
 		if (string_length(metadonnees.auteur)> MAX_CHAINE){
 			return ERREUR_FORMAT;}
-		
 		//check si date int et bon format yyyy-mm-dd
 		int date_lengh = string_length(metadonnees.dateCreation);
 		
 		if (date_lengh != 10)
 			return ERREUR_FORMAT; 
-			
+		printf("HEHE\n");
+		
 		for (int i=0; i<10; i++)
 		{
 		if (i < 4 && (metadonnees.dateCreation[i] < '0' || metadonnees.dateCreation[i] > '9'))
@@ -267,11 +268,40 @@ int pgm_ecrire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int li
 	return OK;
 }
 //CAD
-int pgm_copier(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, int matrice2[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes2, int *p_colonnes2)
+int pgm_copier(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1,int matrice2[MAX_HAUTEUR][MAX_LARGEUR],
+				int *p_lignes2, int *p_colonnes2)
 {
+	//declare variables
+		int i;
+		int j;
+	//verifie si lignes & colonnes sont de grandeur approprier
+		if (lignes1 > MAX_HAUTEUR || lignes1 < 1 || 
+		    colonnes1 > MAX_LARGEUR || colonnes1 < 1){
+			return ERREUR;} //a verifier si bon type d<erreur		
+	
+	//copie lignes et colones dans pointeur respectif
+		*p_lignes2 = lignes1;
+		*p_colonnes2 = colonnes1;
+		
+	//copie la matrice
+		for (i = 0; i<colonnes1; i++){
+			for (j = 0; j<lignes1; j++){
+			matrice2[i][j] = matrice1[i][j];
+			}
+		}
+		
+	//afficher matrice copier (pour debugger)
+		/*printf("Contenu de la matrice :\n");
+		for (i = 0; i < lignes1; i++) {
+			for (j = 0; j < colonnes1; j++) {
+				printf("%d ", matrice2[i][j]);
+			}
+			printf("\n");
+		}*/
+	
     return OK;
 }
-//JT A tester
+//JT 
 int pgm_creer_histogramme(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int histogramme[MAX_VALEUR+1])
 {
 	int i,j;
@@ -299,7 +329,7 @@ int pgm_creer_histogramme(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int
 	}
     return OK;
 }
-//JT A tester
+//JT 
 int pgm_couleur_preponderante(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes)
 {
 	int i;
@@ -325,16 +355,11 @@ int pgm_couleur_preponderante(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes,
     return index;
 }
 
-//A tester
+//JT
 int pgm_eclaircir_noircir(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval, int valeur)
 {
 	int i,j;
 	int valeurNouvelle;
-	struct MetaData metadonnees;
-	strcpy(metadonnees.auteur, "Charles");
-	strcpy(metadonnees.dateCreation, "2006-09-08");
-	strcpy(metadonnees.lieuCreation, "studio");
-	char nom[MAX_CHAINE] = "testEcNo.pgm";
 	if(verifLigneColonne(lignes,colonnes) != OK)
 		return ERREUR_TAILLE;
 	else
@@ -356,24 +381,69 @@ int pgm_eclaircir_noircir(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int
 			}
 		}
 	}
-    return (pgm_ecrire(nom, matrice,lignes, colonnes, maxval, metadonnees));
+    return (OK);
 }
-
+//CAD
 int pgm_creer_negatif(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval)
 {
     return OK;
 }
-
+//JT
 int pgm_extraire(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, int lignes2, int colonnes2, int *p_lignes, int *p_colonnes)
 {
+	int i,j, x, y;
+	int ligneExtraction = (lignes2 - lignes1)+1;
+	int colonneExtraction = (colonnes2 - colonnes1)+1;
+	int matriceIntermediaire[MAX_HAUTEUR][MAX_LARGEUR];
+	//Vérification de tailles des matrices
+	if((verifLigneColonne(lignes1,colonnes1) != OK) || (verifLigneColonne(lignes2,colonnes2) != OK) ||
+	 (verifLigneColonne(*p_lignes, *p_colonnes) != OK))
+		return ERREUR_TAILLE;
+	//vérification que le point 1 est "plus petit" que point 2
+	else if((lignes1 > lignes2) || (colonnes1 > colonnes2))
+		return ERREUR;
+	//vérification que les points de la nouvelle matrice sont à l'intérieur des dimensions de l'ancienne
+	else if((lignes1 > *p_lignes) || (colonnes1 > *p_colonnes)||(lignes2 > *p_lignes) || (colonnes2 > *p_colonnes))
+		return ERREUR;
+	//vérification que la différences entres le point 1 et 2 est plus petite ou égal à l'ancienne
+	else if((ligneExtraction > *p_lignes) || (colonneExtraction > *p_colonnes))
+		return ERREUR;
+	else
+	{
+		//déplace valeur de matrice dans une matrice intermédiaire
+		y = 0;
+		for(i = lignes1; i <= lignes2; i++)
+		{
+			x = 0;
+			for(j = colonnes1; j <= colonnes2; j++)
+			{
+				matriceIntermediaire[y][x] = matrice[i][j];
+				x++;
+			}
+			y++;
+		}
+		//déplace valeur matrice intermédiaire dans matrice finale
+		for(i = 0; i < ligneExtraction; i++)
+		{
+			for(j = 0; j < colonneExtraction; j++)
+			{
+				matrice[i][j] = matriceIntermediaire[i][j];
+				printf("%i ", matrice[i][j]);
+			}
+			printf("\n");
+		}
+		*p_lignes = ligneExtraction;
+		*p_colonnes = colonneExtraction;
+	}
+	
     return OK;
 }
-
+//CAD
 int pgm_sont_identiques(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, int matrice2[MAX_HAUTEUR][MAX_LARGEUR], int lignes2, int colonnes2)
 {
     return OK;
 }
-
+//CAD
 int pgm_pivoter90(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int sens)
 {
     return OK;
@@ -382,7 +452,142 @@ int pgm_pivoter90(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_c
 // Operations pour les images couleurs
 int ppm_lire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int *p_maxval, struct MetaData *p_metadonnees)
 {
-    return OK;
+    	int status = OK;
+	int i, j, compteur;
+	int decalage;
+	char str[MAX_CHAINE];
+	char c;
+	
+	FILE *fpLecture;
+	//ouverture de lecture
+	if ( (fpLecture = fopen(nom_fichier, "r")) == NULL)
+	{
+		fprintf(stderr, "Error opening read file. \n");
+		status = ERREUR_FICHIER;
+		return(status);
+	}
+	//METADATA DÉBUT
+	c = fgetc(fpLecture); // lecture du premier caractère pour commentaire||Metadata
+	if( c == '#')
+	{
+		compteur = 0;
+		decalage = 0;
+		for(i = 0; i < (MAX_CHAINE * 3); i++)
+		{
+			c = fgetc(fpLecture);
+			if( c == ';')
+			{
+				decalage = i + 1;
+				compteur++;
+			}
+			else if ( c =='\n' || c =='\0' || c == '\r')
+				i = (MAX_CHAINE * 3);
+			else
+			{
+				switch(compteur)
+				{
+					case(0):
+						p_metadonnees->auteur[i-decalage] = c;
+						break;
+					case(1):
+						p_metadonnees->dateCreation[i-decalage] = c;
+						break;
+					case(2):
+						p_metadonnees->lieuCreation[i-decalage] = c;
+						break;
+				}
+			}
+		}
+		//printf("%s;%s;%s\n", p_metadonnees->auteur, p_metadonnees->dateCreation, p_metadonnees->lieuCreation);
+	}
+	else
+	{
+		ungetc(c, fpLecture);
+	}
+	//METADATA FIN
+	//VALIDE DÉBUT
+	fgets(str, 3, fpLecture);
+	//printf("%s et %s", str, VAR_PGM);
+	if(stringCompare(str, VAR_PPM) == IDENTIQUES)
+	{
+		c = fgetc(fpLecture);
+		if(c == '\0' || c == ' ' || c == '\n' || c == '\r')
+		{
+			fscanf(fpLecture, "%i",p_colonnes);
+			c = fgetc(fpLecture);
+			if(c == '\0' || c == ' ' || c == '\n' || c == '\r')
+			{
+				fscanf(fpLecture, "%i", p_lignes);
+				c = fgetc(fpLecture);
+				if(c == '\0' || c == ' ' || c == '\n' || c == '\r')
+				{
+					fscanf(fpLecture, "%i", p_maxval);
+					//printf("Colonne: %i \n Ligne: %i \n Max. Valeur: %i \n", *p_colonnes, *p_lignes, *p_maxval);
+				}
+				else
+				{
+					status = ERREUR_FORMAT;
+					return(status);
+				}
+			}
+			else
+			{
+				status = ERREUR_FORMAT;
+				return(status);
+			}
+		}
+		else
+		{
+			status = ERREUR_FORMAT;
+			return(status);
+		}
+	}
+	else
+	{
+		status = ERREUR_FORMAT;
+		return(status);
+	}
+	if(!(*p_maxval > 0 && *p_maxval <= MAX_VALEUR))
+	{
+		status = ERREUR_FORMAT;
+		return(status);
+	}
+	else if (!(( *p_colonnes > 0 && *p_colonnes <= MAX_LARGEUR) && (*p_lignes > 0 && *p_lignes <= MAX_HAUTEUR)))
+	{
+		status = ERREUR_TAILLE;
+		return(status);
+	}
+	//VALIDE FIN
+	//SAVE DONNÉES DÉBUT
+	for(i = 0; i < *p_lignes; i++)
+	{
+		for(j = 0; j < *p_colonnes; j++)
+		{
+			fscanf(fpLecture, "%i", &matrice[i][j].valeurR);
+			if(!(matrice[i][j].valeurR >= 0 && matrice[i][j].valeurR <= *p_maxval))
+			{
+				status = ERREUR_FORMAT;
+				return(status);
+			}
+			fscanf(fpLecture, "%i", &matrice[i][j].valeurG);
+			if(!(matrice[i][j].valeurG >= 0 && matrice[i][j].valeurG <= *p_maxval))
+			{
+				status = ERREUR_FORMAT;
+				return(status);
+			}
+			fscanf(fpLecture, "%i", &matrice[i][j].valeurB);
+			if(!(matrice[i][j].valeurB >= 0 && matrice[i][j].valeurB <= *p_maxval))
+			{
+				status = ERREUR_FORMAT;
+				return(status);
+			}
+			printf("R:%i, G:%i, B:%i ", matrice[i][j].valeurR, matrice[i][j].valeurG, matrice[i][j].valeurB);
+		}
+		printf("\n");
+	}
+	//SAVE DONNÉES FIN
+	fclose(fpLecture); //fin de lecture
+	return (status);
 }
 
 int ppm_ecrire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval, struct MetaData metadonnees)
