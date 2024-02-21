@@ -18,14 +18,14 @@ struct RGB imageRGB2[MAX_HAUTEUR][MAX_LARGEUR];
 int main()
 {
     int lignes1, colonnes1;
-    //~ int lignes2, colonnes2;
-    int maxval;
+    int lignes2, colonnes2;
+    //~ int maxval;
     //~ int histogramme[MAX_VALEUR+1];
-    char nom[MAX_CHAINE];
-    struct MetaData metadonnees;
-	int matrice[MAX_HAUTEUR][MAX_LARGEUR]= {{1,2,3},
-											{4,5,6},
-											{7,8,9}};
+    //~ char nom[MAX_CHAINE];
+    //~ struct MetaData metadonnees;
+	//~ int matrice[MAX_HAUTEUR][MAX_LARGEUR]= {{1,2,3},
+											//~ {4,5,6},
+											//~ {7,8,9}};
 	int retour;
 	
     printf("-> Debut!\n");
@@ -34,16 +34,30 @@ int main()
     //~ retour = pgm_lire(nom, image1, 
                       //~ &lignes1, &colonnes1, 
                       //~ &maxval, &metadonnees);
-                                       
-    strcpy(nom, "test.pgm");
-    lignes1 = 3;
-    colonnes1 = 3;
-    maxval = 10;
-	strcpy(metadonnees.auteur, "Charles");
-	strcpy(metadonnees.dateCreation, "2006-09-08");
-	strcpy(metadonnees.lieuCreation, "studio");
-	retour = pgm_ecrire(nom, matrice, lignes1, colonnes1, maxval, metadonnees);
-                      
+      
+    //TEST pgm_ecrire                                   
+		//~ strcpy(nom, "test.pgm");
+		//~ lignes1 = 3;
+		//~ colonnes1 = 3;
+		//~ maxval = 10;
+		//~ strcpy(metadonnees.auteur, "Charles");
+		//~ strcpy(metadonnees.dateCreation, "2006-09-08");
+		//~ strcpy(metadonnees.lieuCreation, "studio");
+		//~ retour = pgm_ecrire(nom, matrice, lignes1, colonnes1, maxval, metadonnees);
+           
+	//TEST copier
+		int matrice1[MAX_HAUTEUR][MAX_LARGEUR]= {{1,2,3},
+												 {4,5,6},
+												 {7,8,9}};
+		int matrice2[MAX_HAUTEUR][MAX_LARGEUR]=	{{0,0,0},
+												 {0,0,0},
+												 {0,0,0}};
+		lignes1  = 3;
+		colonnes1 = 3;	
+		int *p_lignes2 = &lignes2;		
+		int *p_colonnes2 = &colonnes2;		 
+		retour = pgm_copier(matrice1, lignes1, colonnes1, 
+							matrice2, p_lignes2, p_colonnes2);
 
 	// exemple detraitement d'un code de retour (erreur ou reussite)
 	printf("-> Retour: ");
