@@ -32,8 +32,7 @@ int pgm_lire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_l
     return OK;
 }
 
-///PGM Ecrire
-
+///DEBUT PGM Ecrire
 	int string_length(const char* str) {
 		int length = 0;
 		// Loop jusqua fin
