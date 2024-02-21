@@ -26,6 +26,27 @@ Elles permettent de lire, écrire, copier, créer, pivoter (et plus) les fichier
  * 
  * @return int: la fonction retourne un chiffre pour dire si il a eu une erreur ou non (voir le .h)
  */
+ 
+ int stringCompare(char *str1, char *str2)
+{
+	int same = IDENTIQUES; //va être retourné 0 si pareille, 1 si différent
+	int i = 0;  // integer d'incrémentation 
+    while(str1[i]!='\0' && str2[i]!='\0')  //tant que str1 et str2 n'est pas à la fin de leur string 
+    {  
+       if(str1[i] != str2[i])  //vérification que le caractère est identique
+       {  
+           same = DIFFERENTES;  //pas pareille
+           break;  
+       }  
+       i++;  
+    } 
+    if(str1[i]!='\0' || str2[i]!='\0') //pas la même longueur
+    {
+		same = DIFFERENTES;
+	}
+    return same;
+}
+ 
 int pgm_lire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int *p_maxval, struct MetaData *p_metadonnees)
 {
 	
@@ -195,9 +216,11 @@ int pgm_creer_histogramme(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int
 ///DEBUT pgm_couleur_preponderante
 int pgm_couleur_preponderante(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes)
 {
+	printf("arrive dans fonction!");
 	//Initialisation des variables
 		int valeur = -1; //-1 = erreur
 		int histogramme[MAX_VALEUR+1];
+		
 		int retour = pgm_creer_histogramme(matrice, lignes, colonnes, histogramme);
 	
 	//pgm_creer verifie les donnees alors pas besoin de faire une double verification
@@ -352,16 +375,240 @@ int pgm_pivoter90(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_c
 ///FIN pgm_pivoter90
 
 
-// Operations pour les images couleurs
+// Operations pour les images couleurs	
 int ppm_lire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int *p_maxval, struct MetaData *p_metadonnees)
 {
-    return OK;
+    int status = OK;
+	int i, j, compteur;
+	int decalage;
+	char str[MAX_CHAINE];
+	char c;
+	
+	FILE *fpLecture;
+	//ouverture de lecture
+	if ( (fpLecture = fopen(nom_fichier, "r")) == NULL)
+	{
+		fprintf(stderr, "Error opening read file. \n");
+		status = ERREUR_FICHIER;
+		return(status);
+	}
+	//METADATA DÉBUT
+	c = fgetc(fpLecture); // lecture du premier caractère pour commentaire||Metadata
+	if( c == '#')
+	{
+		compteur = 0;
+		decalage = 0;
+		for(i = 0; i < (MAX_CHAINE * 3); i++)
+		{
+			c = fgetc(fpLecture);
+			if( c == ';')
+			{
+				decalage = i + 1;
+				compteur++;
+			}
+			else if ( c =='\n' || c =='\0' || c == '\r')
+				i = (MAX_CHAINE * 3);
+			else
+			{
+				switch(compteur)
+				{
+					case(0):
+						p_metadonnees->auteur[i-decalage] = c;
+						break;
+					case(1):
+						p_metadonnees->dateCreation[i-decalage] = c;
+						break;
+					case(2):
+						p_metadonnees->lieuCreation[i-decalage] = c;
+						break;
+				}
+			}
+		}
+		//printf("%s;%s;%s\n", p_metadonnees->auteur, p_metadonnees->dateCreation, p_metadonnees->lieuCreation);
+	}
+	else
+	{
+		ungetc(c, fpLecture);
+	}
+	//METADATA FIN
+	//VALIDE DÉBUT
+	fgets(str, 3, fpLecture);
+	//printf("%s et %s", str, VAR_PGM);
+	if(stringCompare(str, NB_MAGIQUE_PPM) == IDENTIQUES)
+	{
+		c = fgetc(fpLecture);
+		if(c == '\0' || c == ' ' || c == '\n' || c == '\r')
+		{
+			fscanf(fpLecture, "%i",p_colonnes);
+			c = fgetc(fpLecture);
+			if(c == '\0' || c == ' ' || c == '\n' || c == '\r')
+			{
+				fscanf(fpLecture, "%i", p_lignes);
+				c = fgetc(fpLecture);
+				if(c == '\0' || c == ' ' || c == '\n' || c == '\r')
+				{
+					fscanf(fpLecture, "%i", p_maxval);
+					//printf("Colonne: %i \n Ligne: %i \n Max. Valeur: %i \n", *p_colonnes, *p_lignes, *p_maxval);
+				}
+				else
+				{
+					status = ERREUR_FORMAT;
+					return(status);
+				}
+			}
+			else
+			{
+				status = ERREUR_FORMAT;
+				return(status);
+			}
+		}
+		else
+		{
+			status = ERREUR_FORMAT;
+			return(status);
+		}
+	}
+	else
+	{
+		status = ERREUR_FORMAT;
+		return(status);
+	}
+	if(!(*p_maxval > 0 && *p_maxval <= MAX_VALEUR))
+	{
+		status = ERREUR_FORMAT;
+		return(status);
+	}
+	else if (!(( *p_colonnes > 0 && *p_colonnes <= MAX_LARGEUR) && (*p_lignes > 0 && *p_lignes <= MAX_HAUTEUR)))
+	{
+		status = ERREUR_TAILLE;
+		return(status);
+	}
+	//VALIDE FIN
+	//SAVE DONNÉES DÉBUT
+	for(i = 0; i < *p_lignes; i++)
+	{
+		for(j = 0; j < *p_colonnes; j++)
+		{
+			fscanf(fpLecture, "%i", &matrice[i][j].valeurR);
+			if(!(matrice[i][j].valeurR >= 0 && matrice[i][j].valeurR <= *p_maxval))
+			{
+				status = ERREUR_FORMAT;
+				return(status);
+			}
+			fscanf(fpLecture, "%i", &matrice[i][j].valeurG);
+			if(!(matrice[i][j].valeurG >= 0 && matrice[i][j].valeurG <= *p_maxval))
+			{
+				status = ERREUR_FORMAT;
+				return(status);
+			}
+			fscanf(fpLecture, "%i", &matrice[i][j].valeurB);
+			if(!(matrice[i][j].valeurB >= 0 && matrice[i][j].valeurB <= *p_maxval))
+			{
+				status = ERREUR_FORMAT;
+				return(status);
+			}
+			printf("R:%i, G:%i, B:%i ", matrice[i][j].valeurR, matrice[i][j].valeurG, matrice[i][j].valeurB);
+		}
+		printf("\n");
+	}
+	//SAVE DONNÉES FIN
+	fclose(fpLecture); //fin de lecture
+	return (status);
 }
+///FIN ppm_ecrire
 
+///DEBUT ppm_ecrire
 int ppm_ecrire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval, struct MetaData metadonnees)
 {
-    return OK;
+	int Donnee_Presente = 0;
+	
+	//Ouvir fichier
+	FILE *fichier = fopen(nom_fichier, "w");
+	if (fichier == NULL)
+		return ERREUR_FICHIER;
+	
+	//valid info avant d'ecrire Format
+	//verifie si lignes & colonnes sont de grandeur approprier
+		if (lignes > MAX_HAUTEUR || lignes < 1 || 
+		    colonnes > MAX_LARGEUR || colonnes < 1){
+			return ERREUR_TAILLE;}
+	
+	//Valide valeur max
+		if (maxval < 0 || maxval > MAX_VALEUR)
+			return ERREUR_FORMAT;
+	
+	
+	//Check s'il y a un commentaire a ecrire
+		if (string_length(metadonnees.auteur) > 0 || string_length(metadonnees.dateCreation) > 0 || string_length(metadonnees.lieuCreation) > 0)
+			Donnee_Presente = 1;
+	
+	if (Donnee_Presente == 1){
+		//Valide grosseurs du champ auteur est correct
+			if (string_length(metadonnees.auteur)> MAX_CHAINE)
+				return ERREUR_FORMAT;
+			
+		//check si date int et bon format yyyy-mm-dd
+			if (string_length(metadonnees.dateCreation) > 0){
+				int date_lengh = string_length(metadonnees.dateCreation);
+			
+				if (date_lengh != 10)
+					return ERREUR_FORMAT; 
+				
+				for (int i=0; i<10; i++)
+				{
+					if (i < 4 && (metadonnees.dateCreation[i] < '0' || metadonnees.dateCreation[i] > '9'))
+						return ERREUR_FORMAT;
+					if (i == 4 && (metadonnees.dateCreation[i] != '-'))
+						return ERREUR_FORMAT;
+					if (i > 4 && i < 7 && (metadonnees.dateCreation[i] < '0' || metadonnees.dateCreation[i] > '9'))
+						return ERREUR_FORMAT;
+					if (i == 7 && (metadonnees.dateCreation[i] != '-'))
+						return ERREUR_FORMAT;	
+					if (i > 7 && (metadonnees.dateCreation[i] < '0' || metadonnees.dateCreation[i] > '9'))
+						return ERREUR_FORMAT;	
+				}
+			}
+		//Valide grosseurs du champ lieucreation est correct
+			if (string_length(metadonnees.lieuCreation)> MAX_CHAINE){
+				return ERREUR_FORMAT;}
+	}
+	//Ecrire MetaData
+		if (Donnee_Presente == 1)
+			fprintf(fichier, "#%s; %s; %s\n", metadonnees.auteur, metadonnees.dateCreation, metadonnees.lieuCreation);
+	
+	//Ecrire Format
+		fprintf(fichier, "P3\n%d %d\n%d\n", colonnes, lignes, maxval);
+	
+	//Ecrire donnees de la matrice
+		for(int j=0; j < lignes; j++){
+			for (int i=0; i < colonnes; i++){
+				//rouge
+				if (matrice[j][i].valeurR >= 0 && matrice[j][i].valeurR<= maxval)
+					fprintf(fichier,"%d ", matrice[j][i].valeurR);
+				else
+					return ERREUR_FORMAT;
+				//vert
+				if (matrice[j][i].valeurG >= 0 && matrice[j][i].valeurG<= maxval)
+					fprintf(fichier,"%d ", matrice[j][i].valeurG);
+				else
+					return ERREUR_FORMAT;
+				//bleu	
+				if (matrice[j][i].valeurB >= 0 && matrice[j][i].valeurB<= maxval)
+					fprintf(fichier,"%d ", matrice[j][i].valeurB);
+				else
+					return ERREUR_FORMAT;
+				
+			}
+			fprintf(fichier, "\n");
+				
+		}
+		
+	//ferme le fichier
+		fclose(fichier);
+	
+	return OK;
 }
+///FIN ppm_ecrire
 
 int ppm_copier(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, struct RGB matrice2[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes2, int *p_colonnes2)
 {
