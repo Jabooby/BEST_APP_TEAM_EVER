@@ -20,8 +20,9 @@ int main()
     int lignes2, colonnes2;
     int maxval;
     int histogramme[MAX_VALEUR+1];
-    char nom[MAX_CHAINE] = "Sherbrooke_Frontenac_nuit.pgm";
+    char nom[MAX_CHAINE] = "test.pgm";
     struct MetaData metadonnees;
+    
 
 	int retour;
 
@@ -37,11 +38,10 @@ int main()
 	else
 		printf("-> ERREUR");
 	printf("\n");
-
-	// autre exemple d'appel de fonction
-    pgm_ecrire(nom, image1, 
-               lignes1, colonnes1, 
-               maxval, metadonnees);
+	//pgm_creer_histogramme(image1, lignes1, colonnes1, histogramme);
+	printf("pgm_couleur_preponderante: %i \n", pgm_couleur_preponderante(image1, lignes1, colonnes1));
+	pgm_eclaircir_noircir(image1, lignes1, colonnes1, maxval, -9);
+	
 
     printf("-> Fin!\n");
 
