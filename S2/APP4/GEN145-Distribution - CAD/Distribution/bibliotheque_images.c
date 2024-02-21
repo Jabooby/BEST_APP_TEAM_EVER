@@ -32,8 +32,7 @@ int pgm_lire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_l
     return OK;
 }
 
-///PGM Ecrire
-
+///DEBUT PGM Ecrire
 	int string_length(const char* str) {
 		int length = 0;
 		// Loop jusqua fin
@@ -46,6 +45,7 @@ int pgm_lire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_l
 int pgm_ecrire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval, struct MetaData metadonnees)
 {
 	int Donnee_Presente = 0;
+	
 	//Ouvir fichier
 	FILE *fichier = fopen(nom_fichier, "w");
 	if (fichier == NULL)
@@ -55,14 +55,14 @@ int pgm_ecrire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int li
 	
 	
 	//valid info avant d'ecrire Format
-		//Valide valeur max
+	//Valide valeur max
 		if ((maxval < 0) || (maxval > MAX_VALEUR)){
 			return ERREUR_FORMAT;}
-		//Valide grosseurs des champs auteur
+	//Valide grosseurs du champ auteur est correct
 		if (string_length(metadonnees.auteur)> MAX_CHAINE){
 			return ERREUR_FORMAT;}
 		
-		//check si date int et bon format yyyy-mm-dd
+	//check si date int et bon format yyyy-mm-dd
 		int date_lengh = string_length(metadonnees.dateCreation);
 		
 		if (date_lengh != 10)
@@ -82,18 +82,17 @@ int pgm_ecrire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int li
 			return ERREUR_FORMAT;	
 		}
 		
-			//Valid si integer
-		//ajout ici
-		
+
+	//Check s'il y a un commentaire a ecrire
 		if (string_length(metadonnees.auteur) > 0 && string_length(metadonnees.dateCreation) && string_length(metadonnees.lieuCreation)){
 			Donnee_Presente = 1;
 		}
 	
 	
 	//Ecrire MetaData
-	if (Donnee_Presente == 1){
-		fprintf(fichier, "#%s; %s; %s\n", metadonnees.auteur, metadonnees.dateCreation, metadonnees.lieuCreation);
-	}
+		if (Donnee_Presente == 1){
+			fprintf(fichier, "#%s; %s; %s\n", metadonnees.auteur, metadonnees.dateCreation, metadonnees.lieuCreation);
+		}
 	
 	
 	//Ecrire Format
@@ -103,38 +102,115 @@ int pgm_ecrire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int li
 	//Validation grandeur Hauteur et Largeur
 	
 	//Ecrire donnees de la matrice
-	for(int j=0; j < lignes; j++){
-		for (int i=0; i < colonnes; i++){
-			if (matrice[j][i] >= 0 && matrice[j][i]<= maxval){
-				fprintf(fichier,"%d ", matrice[j][i]);}
-			else{
-				return ERREUR_FORMAT;
+		for(int j=0; j < lignes; j++){
+			for (int i=0; i < colonnes; i++){
+				if (matrice[j][i] >= 0 && matrice[j][i]<= maxval){
+					fprintf(fichier,"%d ", matrice[j][i]);}
+				else{
+					return ERREUR_FORMAT;
+				}
 			}
+			fprintf(fichier, "\n");
+				
 		}
-		fprintf(fichier, "\n");
-			
-	}
 		
-	//close le fichier
-	fclose(fichier);
+	//ferme le fichier
+		fclose(fichier);
 	
 	return OK;
 }
+///FIN de PGM Ecrire
 
-int pgm_copier(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, int matrice2[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes2, int *p_colonnes2)
+///DEBUT PGM Copier
+int pgm_copier(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, 
+			   int matrice2[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes2, int *p_colonnes2)
 {
+	//declare variables
+		int i;
+		int j;
+	//verifie si lignes & colonnes sont de grandeur approprier
+		if (lignes1 > MAX_HAUTEUR || lignes1 < 1 || 
+		    colonnes1 > MAX_LARGEUR || colonnes1 < 1){
+			return ERREUR;} //a verifier si bon type d<erreur		
+	
+	//copie lignes et colones dans pointeur respectif
+		*p_lignes2 = lignes1;
+		*p_colonnes2 = colonnes1;
+		
+	//copie la matrice
+		for (i = 0; i<colonnes1; i++){
+			for (j = 0; j<lignes1; j++){
+			matrice2[i][j] = matrice1[i][j];
+			}
+		}
+		
+	//afficher matrice copier (pour debugger)
+		printf("Contenu de la matrice :\n");
+		for (i = 0; i < lignes1; i++) {
+			for (j = 0; j < colonnes1; j++) {
+				printf("%d ", matrice2[i][j]);
+			}
+			printf("\n");
+		}
+	
     return OK;
 }
+///FIN PGM COPIER
 
+///DEBUT pgm_creer_histogramme
 int pgm_creer_histogramme(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int histogramme[MAX_VALEUR+1])
 {
+	//verifie si lignes & colonnes sont de grandeur approprier
+		if (lignes > MAX_HAUTEUR || lignes < 1 || 
+		    colonnes > MAX_LARGEUR || colonnes < 1){
+			return ERREUR;} //a verifier si bon type d<erreur
+	
+	//creation de l'historigramme
+	int index = 0;
+	for (int i=0; i<lignes; i++){
+		for (int j=0; j<colonnes; j++){
+			index = matrice[i][j];
+			if (index > (MAX_VALEUR+1) || index < 0){
+				return ERREUR;
+				}
+			histogramme[index]++;
+		}
+	}
+	
     return OK;
 }
+/// FIN pgm_creer_historigramme
 
+
+///DEBUT pgm_couleur_preponderante
 int pgm_couleur_preponderante(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes)
 {
-    return OK;
+	//Initialisation des variables
+		int valeur = -1; //-1 = erreur
+		int histogramme[MAX_VALEUR+1];
+		int retour = pgm_creer_histogramme(matrice, lignes, colonnes, histogramme);
+	
+	//pgm_creer verifie les donnees alors pas besoin de faire une double verification
+		 if (retour == ERREUR)
+			return ERREUR;
+	
+	//compte le nombre de fois qu'une couleur apparait	
+		for(int i=0; i < lignes; i++){
+			for (int j=0; j < colonnes; j++){
+				//store la plus grosse valeur dans valeur
+				if (matrice[i][j] > valeur){
+					valeur = matrice[i][j];
+					}
+				
+			}
+		}
+	
+    return valeur;
 }
+///FIN pgm_couleur_preponderante
+
+
+
 
 int pgm_eclaircir_noircir(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval, int valeur)
 {

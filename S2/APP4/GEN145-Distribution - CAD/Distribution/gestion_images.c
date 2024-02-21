@@ -18,14 +18,14 @@ struct RGB imageRGB2[MAX_HAUTEUR][MAX_LARGEUR];
 int main()
 {
     int lignes1, colonnes1;
-    //~ int lignes2, colonnes2;
-    int maxval;
+    int lignes2, colonnes2;
+    //~ int maxval;
     //~ int histogramme[MAX_VALEUR+1];
-    char nom[MAX_CHAINE];
-    struct MetaData metadonnees;
-	int matrice[MAX_HAUTEUR][MAX_LARGEUR]= {{1,2,3},
-											{4,5,6},
-											{7,8,9}};
+    //~ char nom[MAX_CHAINE];
+    //~ struct MetaData metadonnees;
+	//~ int matrice[MAX_HAUTEUR][MAX_LARGEUR]= {{1,2,3},
+											//~ {4,5,6},
+											//~ {7,8,9}};
 	int retour;
 	
     printf("-> Debut!\n");
@@ -34,27 +34,86 @@ int main()
     //~ retour = pgm_lire(nom, image1, 
                       //~ &lignes1, &colonnes1, 
                       //~ &maxval, &metadonnees);
-                                       
-    strcpy(nom, "test.pgm");
-    lignes1 = 3;
-    colonnes1 = 3;
-    maxval = 10;
-	strcpy(metadonnees.auteur, "Charles");
-	strcpy(metadonnees.dateCreation, "2006-09-08");
-	strcpy(metadonnees.lieuCreation, "studio");
-	retour = pgm_ecrire(nom, matrice, lignes1, colonnes1, maxval, metadonnees);
-                      
-
-	// exemple detraitement d'un code de retour (erreur ou reussite)
-	printf("-> Retour: ");
-	if (retour == OK)
-		printf("-> OK");
-	else if (retour == ERREUR_FICHIER)
-		printf("-> ERREUR_FICHIER\n");
-	else if (retour == ERREUR_FORMAT)
-		printf("-> ERREUR_FORMAT\n");
-	else if (retour == ERREUR_TAILLE)
-		printf("-> ERREUR_TAILLE\n");	
+      
+    //TEST pgm_ecrire                                   
+		//~ printf("-> TEST pgm_ecrire: ");
+		//~ strcpy(nom, "test.pgm");
+		//~ lignes1 = 3;
+		//~ colonnes1 = 3;
+		//~ maxval = 10;
+		//~ strcpy(metadonnees.auteur, "Charles");
+		//~ strcpy(metadonnees.dateCreation, "2006-09-08");
+		//~ strcpy(metadonnees.lieuCreation, "studio");
+		//~ retour = pgm_ecrire(nom, matrice, lignes1, colonnes1, maxval, metadonnees);
+        
+        //~ printf("-> Retour: ");
+		//~ if (retour == OK)
+			//~ printf("-> OK");
+		//~ else if (retour == ERREUR_FICHIER)
+			//~ printf("-> ERREUR_FICHIER\n");
+		//~ else if (retour == ERREUR_FORMAT)
+			//~ printf("-> ERREUR_FORMAT\n");
+		//~ else if (retour == ERREUR_TAILLE)
+			//~ printf("-> ERREUR_TAILLE\n");
+		//~ else if (retour == ERREUR)
+			//~ printf("-> ERREUR\n");	
+          
+           
+	//TEST copier
+		printf("-> TEST copier\n");
+		int matrice1[MAX_HAUTEUR][MAX_LARGEUR]= {{1,2,3},
+												 {4,5,6},
+												 {7,8,9}};
+		int matrice2[MAX_HAUTEUR][MAX_LARGEUR]=	{{0,0,0},
+												 {0,0,0},
+												 {0,0,0}};
+		lignes1  = 3;
+		colonnes1 = 3;	
+		int *p_lignes2 = &lignes2;		
+		int *p_colonnes2 = &colonnes2;		 
+		retour = pgm_copier(matrice1, lignes1, colonnes1, 
+							matrice2, p_lignes2, p_colonnes2);
+		printf("-> Retour: ");
+		if (retour == OK)
+			printf("-> OK\n");
+		else if (retour == ERREUR_FICHIER)
+			printf("-> ERREUR_FICHIER\n");
+		else if (retour == ERREUR_FORMAT)
+			printf("-> ERREUR_FORMAT\n");
+		else if (retour == ERREUR_TAILLE)
+			printf("-> ERREUR_TAILLE\n");
+		else if (retour == ERREUR)
+			printf("-> ERREUR\n");					
+	
+	
+	//TEST pgm prepondante
+		printf("-> TEST pgm_prepondante\n");
+		int matrice_prepondante[MAX_HAUTEUR][MAX_LARGEUR] = {{1,2,3},
+														     {4,2,6},
+															 {7,8,9}};
+		int lignes_prepondante = 3;
+		int colonnes_prepondante = 3;
+		
+		retour = pgm_couleur_preponderante(matrice_prepondante, lignes_prepondante, colonnes_prepondante);			
+		printf("-> Retour: ");
+		
+		if (retour == OK)
+			printf("Valeur de preponderante : %d\n", retour);
+		
+			
+			
+			
+			
+	//~ // exemple detraitement d'un code de retour (erreur ou reussite)
+	//~ printf("-> Retour: ");
+	//~ if (retour == OK)
+		//~ printf("-> OK");
+	//~ else if (retour == ERREUR_FICHIER)
+		//~ printf("-> ERREUR_FICHIER\n");
+	//~ else if (retour == ERREUR_FORMAT)
+		//~ printf("-> ERREUR_FORMAT\n");
+	//~ else if (retour == ERREUR_TAILLE)
+		//~ printf("-> ERREUR_TAILLE\n");	
 
 
 
