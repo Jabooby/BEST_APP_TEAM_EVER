@@ -131,7 +131,7 @@ int pgm_copier(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes
 	//verifie si lignes & colonnes sont de grandeur approprier
 		if (lignes1 > MAX_HAUTEUR || lignes1 < 1 || 
 		    colonnes1 > MAX_LARGEUR || colonnes1 < 1){
-			return ERREUR_FORMAT;} //a verifier si bon type d<erreur		
+			return ERREUR;} //a verifier si bon type d<erreur		
 	
 	//copie lignes et colones dans pointeur respectif
 		*p_lignes2 = lignes1;
@@ -156,15 +156,61 @@ int pgm_copier(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes
     return OK;
 }
 ///FIN PGM COPIER
+
+///DEBUT pgm_creer_histogramme
 int pgm_creer_histogramme(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int histogramme[MAX_VALEUR+1])
 {
+	//verifie si lignes & colonnes sont de grandeur approprier
+		if (lignes > MAX_HAUTEUR || lignes < 1 || 
+		    colonnes > MAX_LARGEUR || colonnes < 1){
+			return ERREUR;} //a verifier si bon type d<erreur
+	
+	//creation de l'historigramme
+	int index = 0;
+	for (int i=0; i<lignes; i++){
+		for (int j=0; j<colonnes; j++){
+			index = matrice[i][j];
+			if (index > (MAX_VALEUR+1) || index < 0){
+				return ERREUR;
+				}
+			histogramme[index]++;
+		}
+	}
+	
     return OK;
 }
+/// FIN pgm_creer_historigramme
 
+
+///DEBUT pgm_couleur_preponderante
 int pgm_couleur_preponderante(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes)
 {
-    return OK;
+	//Initialisation des variables
+		int valeur = -1; //-1 = erreur
+		int histogramme[MAX_VALEUR+1];
+		int retour = pgm_creer_histogramme(matrice, lignes, colonnes, histogramme);
+	
+	//pgm_creer verifie les donnees alors pas besoin de faire une double verification
+		 if (retour == ERREUR)
+			return ERREUR;
+	
+	//compte le nombre de fois qu'une couleur apparait	
+		for(int i=0; i < lignes; i++){
+			for (int j=0; j < colonnes; j++){
+				//store la plus grosse valeur dans valeur
+				if (matrice[i][j] > valeur){
+					valeur = matrice[i][j];
+					}
+				
+			}
+		}
+	
+    return valeur;
 }
+///FIN pgm_couleur_preponderante
+
+
+
 
 int pgm_eclaircir_noircir(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval, int valeur)
 {
