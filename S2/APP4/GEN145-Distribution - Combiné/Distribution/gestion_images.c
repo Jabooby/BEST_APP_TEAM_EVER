@@ -7,6 +7,7 @@ Description: Fichier de distribution pour GEN145.
 ********/
 
 #include <stdio.h>
+#include "AutoValidation.h"
 #include "bibliotheque_images.h"
 
 int image1[MAX_HAUTEUR][MAX_LARGEUR];
@@ -16,7 +17,9 @@ struct RGB imageRGB2[MAX_HAUTEUR][MAX_LARGEUR];
 
 int main()
 {
-	int lignes1, colonnes1;
+	
+	AutoValidation();
+	/*int lignes1, colonnes1;
     int lignes2 = 2, colonnes2 = 2;
     int lignes3 = 2, colonnes3 = 2;
     int lignesRGB, colonnesRGB, maxValRGB;
@@ -55,6 +58,6 @@ int main()
 		printf("-> ERREUR");
 	printf("\n");
     printf("-> Fin!\n");
-
+	*/
     return 0;
 }
