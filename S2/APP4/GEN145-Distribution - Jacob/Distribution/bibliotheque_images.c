@@ -13,13 +13,13 @@ Elles permettent de lire, écrire, copier, créer, pivoter (et plus) les fichier
 
 int string_length(const char* str) 
 {
-	int length = 0;
+	int length = 0; // valeur qui garde le compte
 	// Loop jusqua fin
 	while (*str != '\0') {
 		length++;
 		str++;
 	}
-	return length;
+	return length; //retourne la longueur du string
 }
 int stringCompare(char *str1, char *str2)
 {
@@ -43,7 +43,7 @@ int stringCompare(char *str1, char *str2)
 
 int verifLigneColonne(int nbLignes, int nbColonnes)
 {
-	if((nbLignes <= 256 && nbLignes >= 0) || (nbColonnes  <= 256 && nbColonnes >= 0))
+	if((nbLignes <= 256 && nbLignes >= 0) || (nbColonnes  <= 256 && nbColonnes >= 0)) //vérification que les lignes et colonnes ne dépassent pas 256
 		return OK;
 	else
 		return ERREUR;
@@ -63,11 +63,11 @@ int verifLigneColonne(int nbLignes, int nbColonnes)
 int pgm_lire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes,
 				int *p_colonnes, int *p_maxval, struct MetaData *p_metadonnees)
 {
-	int status = OK;
-	int i, j, compteur;
-	int decalage;
-	char str[MAX_CHAINE];
-	char c;
+	int status = OK; // pas nécessaire peut être enlevé plus tard
+	int i, j, compteur; //pour les boucles for et compteur pour savoir quelle info du metadata on lit présentement 
+	int decalage; //decalage de l'incrémentation pour le metaadata
+	char str[MAX_CHAINE]; //string pour comparer le format
+	char c; //charactère intermédiaire
 	
 	FILE *fpLecture;
 	//ouverture de lecture
@@ -97,13 +97,13 @@ int pgm_lire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_l
 			{
 				switch(compteur)
 				{
-					case(0):
+					case(0): //auteur
 						p_metadonnees->auteur[i-decalage] = c;
 						break;
-					case(1):
+					case(1): //date de création
 						p_metadonnees->dateCreation[i-decalage] = c;
 						break;
-					case(2):
+					case(2): //lieu de création
 						p_metadonnees->lieuCreation[i-decalage] = c;
 						break;
 				}
