@@ -175,14 +175,14 @@ int pgm_copier(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes
 			}
 		}
 		
-	//afficher matrice copier (pour debugger)
-		printf("Contenu de la matrice :\n");
-		for (i = 0; i < lignes1; i++) {
-			for (j = 0; j < colonnes1; j++) {
-				printf("%d ", matrice2[i][j]);
-			}
-			printf("\n");
-		}
+	//~ //afficher matrice copier (pour debugger)
+		//~ printf("Contenu de la matrice :\n");
+		//~ for (i = 0; i < lignes1; i++) {
+			//~ for (j = 0; j < colonnes1; j++) {
+				//~ printf("%d ", matrice2[i][j]);
+			//~ }
+			//~ printf("\n");
+		//~ }
 	
     return OK;
 }
@@ -216,7 +216,6 @@ int pgm_creer_histogramme(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int
 ///DEBUT pgm_couleur_preponderante
 int pgm_couleur_preponderante(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes)
 {
-	printf("arrive dans fonction!");
 	//Initialisation des variables
 		int valeur = -1; //-1 = erreur
 		int histogramme[MAX_VALEUR+1];
@@ -355,13 +354,13 @@ int pgm_pivoter90(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_c
 					matrice_inter[*p_colonnes-1-j][i] = matrice[i][j];
 			}
 		}
-		
-		for (int x = 0; x < lignes_inter; x++) {
-			for (int y = 0; y < colonnes_inter; y++) {
-				printf("%d ", matrice_inter[x][y]);
-			}	
-			printf("\n");
-		}
+		//affichage matrice pour debug
+		//~ for (int x = 0; x < lignes_inter; x++) {
+			//~ for (int y = 0; y < colonnes_inter; y++) {
+				//~ printf("%d ", matrice_inter[x][y]);
+			//~ }	
+			//~ printf("\n");
+		//~ }
 
 	//copie matrice intermediaire dans la matrice
 	int retour = pgm_copier(matrice_inter, lignes_inter, colonnes_inter, 
@@ -507,9 +506,9 @@ int ppm_lire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR], i
 				status = ERREUR_FORMAT;
 				return(status);
 			}
-			printf("R:%i, G:%i, B:%i ", matrice[i][j].valeurR, matrice[i][j].valeurG, matrice[i][j].valeurB);
+			//~ printf("R:%i, G:%i, B:%i ", matrice[i][j].valeurR, matrice[i][j].valeurG, matrice[i][j].valeurB);
 		}
-		printf("\n");
+		//~ printf("\n");
 	}
 	//SAVE DONNÉES FIN
 	fclose(fpLecture); //fin de lecture
@@ -610,17 +609,23 @@ int ppm_ecrire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR],
 }
 ///FIN ppm_ecrire
 
+///DEBUT ppm_copier (JACOB)
 int ppm_copier(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, struct RGB matrice2[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes2, int *p_colonnes2)
 {
     return OK;
 }
+///FIN ppm_copier
 
+///DEBUT ppm_sont_identiques
 int ppm_sont_identiques(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, struct RGB matrice2[MAX_HAUTEUR][MAX_LARGEUR], int lignes2, int colonnes2)
 {
     return OK;
 }
+///FIN ppm_sont_identiques
 
+///DEBUT ppm_pivoter90
 int ppm_pivoter90(struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int sens)
 {
     return OK;
 }
+///FIN ppm_pivoter90
