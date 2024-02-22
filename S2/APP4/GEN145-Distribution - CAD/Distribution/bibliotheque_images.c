@@ -378,7 +378,7 @@ int pgm_pivoter90(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_c
 
 // Operations pour les images couleurs----------------------------------------------------------------------------------------------------------------------------
 
-///DEBUT ppm_ecrire
+///DEBUT ppm_lire
 int ppm_lire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int *p_maxval, struct MetaData *p_metadonnees)
 {
     int status = OK;
@@ -518,7 +518,7 @@ int ppm_lire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR], i
 	fclose(fpLecture); //fin de lecture
 	return (status);
 }
-	///FIN ppm_ecrire
+	///FIN ppm_lire
 
 
 ///DEBUT ppm_ecrire
