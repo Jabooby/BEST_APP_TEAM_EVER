@@ -53,6 +53,7 @@ int pgm_lire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_l
     return OK;
 }
 
+
 ///DEBUT PGM Ecrire
 	int string_length(const char* str) {
 		int length = 0;
@@ -148,11 +149,10 @@ int pgm_ecrire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR], int li
 	
 	return OK;
 }
-///FIN de PGM Ecrire
+	///FIN de PGM Ecrire
+
 
 ///DEBUT PGM Copier
-
-
 int pgm_copier(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, 
 			   int matrice2[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes2, int *p_colonnes2)
 {
@@ -186,7 +186,8 @@ int pgm_copier(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes
 	
     return OK;
 }
-///FIN PGM COPIER
+	///FIN PGM COPIER
+
 
 ///DEBUT pgm_creer_histogramme
 int pgm_creer_histogramme(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int histogramme[MAX_VALEUR+1])
@@ -210,7 +211,7 @@ int pgm_creer_histogramme(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int
 	
     return OK;
 }
-/// FIN pgm_creer_historigramme
+	/// FIN pgm_creer_historigramme
 
 
 ///DEBUT pgm_couleur_preponderante
@@ -239,7 +240,7 @@ int pgm_couleur_preponderante(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes,
 	
     return valeur;
 }
-///FIN pgm_couleur_preponderante
+	///FIN pgm_couleur_preponderante
 
 
 
@@ -266,7 +267,8 @@ int pgm_eclaircir_noircir(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int
 	
     return OK;
 }
-///FIN pgm_eclaircir_noircir
+	///FIN pgm_eclaircir_noircir
+
 
 ///DEBUT pgm_creer_negatif
 int pgm_creer_negatif(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval)
@@ -294,7 +296,7 @@ int pgm_creer_negatif(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int col
 	
     return OK;
 }
-///FIN pgm_creer_negatif
+	///FIN pgm_creer_negatif
 
 ///DEBUT pgm_extraire
 int pgm_extraire(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, int lignes2, int colonnes2, int *p_lignes, int *p_colonnes)
@@ -303,7 +305,7 @@ int pgm_extraire(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonne
 	//ajouter jacob ici
     return OK;
 }
-///FIN pgm_extraire
+	///FIN pgm_extraire
 
 ///DEBUT pgm_sont_identiques
 int pgm_sont_identiques(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, 
@@ -329,7 +331,7 @@ int pgm_sont_identiques(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int
 	
     return IDENTIQUES;
 }
-///FIN pgm_sont_identiques
+	///FIN pgm_sont_identiques
 
 
 ///DEBUT pgm_pivoter90
@@ -371,10 +373,12 @@ int pgm_pivoter90(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_c
 	
     return OK;
 }
-///FIN pgm_pivoter90
+	///FIN pgm_pivoter90
 
 
-// Operations pour les images couleurs	
+// Operations pour les images couleurs----------------------------------------------------------------------------------------------------------------------------
+
+///DEBUT ppm_ecrire
 int ppm_lire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int *p_maxval, struct MetaData *p_metadonnees)
 {
     int status = OK;
@@ -514,7 +518,8 @@ int ppm_lire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR], i
 	fclose(fpLecture); //fin de lecture
 	return (status);
 }
-///FIN ppm_ecrire
+	///FIN ppm_ecrire
+
 
 ///DEBUT ppm_ecrire
 int ppm_ecrire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval, struct MetaData metadonnees)
@@ -607,25 +612,87 @@ int ppm_ecrire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR],
 	
 	return OK;
 }
-///FIN ppm_ecrire
+	///FIN ppm_ecrire
+
 
 ///DEBUT ppm_copier (JACOB)
 int ppm_copier(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, struct RGB matrice2[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes2, int *p_colonnes2)
 {
     return OK;
 }
-///FIN ppm_copier
+	///FIN ppm_copier
+
 
 ///DEBUT ppm_sont_identiques
-int ppm_sont_identiques(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, struct RGB matrice2[MAX_HAUTEUR][MAX_LARGEUR], int lignes2, int colonnes2)
+int ppm_sont_identiques(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, 
+						struct RGB matrice2[MAX_HAUTEUR][MAX_LARGEUR], int lignes2, int colonnes2)
 {
-    return OK;
+	
+	//verifie si lignes & colonnes sont de grandeur approprier
+		if (lignes1 > MAX_HAUTEUR || lignes1 < 1 || 
+		    colonnes1 > MAX_LARGEUR || colonnes1 < 1){
+			return ERREUR_FORMAT;} 
+		if (lignes2 > MAX_HAUTEUR || lignes2 < 1 || 
+		    colonnes2 > MAX_LARGEUR || colonnes2 < 1){
+			return ERREUR_FORMAT;}	
+	
+	//verifie si lignes1 et 2, et colonnes 1 et 2 sont identique
+		if (lignes1 != lignes2 || colonnes1 != colonnes2)
+			return DIFFERENTES;
+			
+	//verifie pixels
+		for (int i=0; i< lignes1; i++){
+			for(int j=0; j<colonnes1; j++){
+				if (matrice1[i][j].valeurR != matrice2[i][j].valeurR)
+					return DIFFERENTES;
+				if (matrice1[i][j].valeurG != matrice2[i][j].valeurG)
+					return DIFFERENTES;
+				if (matrice1[i][j].valeurB != matrice2[i][j].valeurB)
+					return DIFFERENTES;	
+			}
+		}
+		
+	
+    return IDENTIQUES;
 }
-///FIN ppm_sont_identiques
+	///FIN ppm_sont_identiques
+
 
 ///DEBUT ppm_pivoter90
 int ppm_pivoter90(struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int sens)
 {
+	//verifie si lignes & colonnes sont de grandeur approprier
+		if (*p_lignes > MAX_HAUTEUR || *p_lignes < 1 || 
+		    *p_colonnes > MAX_LARGEUR || *p_colonnes < 1){
+			return ERREUR_FORMAT;}
+			
+	//creer matrice intermediaire
+		int lignes_inter = *p_colonnes;
+		int colonnes_inter = *p_lignes;
+		struct RGB matrice_inter[MAX_HAUTEUR][MAX_LARGEUR];
+		
+	//ecriture de la matrice
+		for (int i=0; i < *p_lignes; i++){
+			for(int j=0; j < *p_colonnes; j++){
+				if (sens == 1){
+					matrice_inter[j][*p_lignes-1-i].valeurR = matrice[i][j].valeurR;
+					matrice_inter[j][*p_lignes-1-i].valeurG = matrice[i][j].valeurG;
+					matrice_inter[j][*p_lignes-1-i].valeurB = matrice[i][j].valeurB;
+				};
+				if (sens == 0){
+					matrice_inter[*p_colonnes-1-j][i].valeurR = matrice[i][j].valeurR;
+					matrice_inter[*p_colonnes-1-j][i].valeurG = matrice[i][j].valeurG;
+					matrice_inter[*p_colonnes-1-j][i].valeurB = matrice[i][j].valeurB;
+				};
+			}
+		}
+
+	//copie matrice intermediaire dans la matrice
+	int retour = ppm_copier(matrice_inter, lignes_inter, colonnes_inter, 
+							matrice, p_lignes, p_colonnes);
+	if (retour != OK)
+		return ERREUR;
+		
     return OK;
 }
-///FIN ppm_pivoter90
+	///FIN ppm_pivoter90
